@@ -6,9 +6,9 @@ fn main() {
     print!("$ ");
 
     let mut input = String::new();
-    match io::stdin().read_line(&mut input);
+    io::stdin().read_line(&mut input);
 
-    print!({input}: command not found)
+    print!("{input}: command not found");
 
     io::stdout().flush().unwrap();
 }
