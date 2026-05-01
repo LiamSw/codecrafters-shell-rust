@@ -5,7 +5,7 @@ fn main() {
     // TODO: Uncomment the code below to pass the first stage
     print!("$ ");
 
-    let mut input = String::new();
+    let _ = String::new();
     io::stdin().read_line(&mut input);
 
     print!("{input}: command not found");
