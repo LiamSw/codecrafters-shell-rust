@@ -1,10 +1,6 @@
 #[allow(unused_imports)]
 use std::io::{self, Write};
 
-fn not_found(cmd: &str) {
-    println!("{cmd}: command not found");
-}
-
 fn main() {
     loop {
         print!("$ ");
@@ -30,10 +26,10 @@ fn main() {
                 if recognized_com.contains(cmd_type) {
                     println!("{cmd_type} is a shell builtin");
                 } else {
-                    not_found(cmd_type);
+                    println!("{cmd_type}: not found");
                 }
             }
-            _ => not_found(command),
+            _ => println!("{cmd}: command not found"),
         }
     }
 }
