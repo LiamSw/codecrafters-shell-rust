@@ -13,6 +13,6 @@ fn main() {
         
         let command = input.trim();
 
-        print!("{command}: command not found");
+        println!("{command}: command not found");
     }
 }
