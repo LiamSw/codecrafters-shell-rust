@@ -29,7 +29,7 @@ fn main() {
                     println!("{cmd_type}: not found");
                 }
             }
-            _ => println!("{cmd}: command not found"),
+            _ => println!("{command}: command not found"),
         }
     }
 }
