@@ -28,7 +28,7 @@ fn main() {
             "type" => {
                 if (args.len > 1) {std::process::exit(0);} 
 
-                if (recognized_com.contains(args[0])) {
+                if (recognized_com.contains(&args[0])) {
                     println!("{command} is a shell builtin");
                 } else {
                     not_found(command);
