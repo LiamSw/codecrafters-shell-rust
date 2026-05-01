@@ -12,6 +12,7 @@ fn main() {
             .expect("Failed to read line");
         
         let split = input.split_whitespace().collect::<Vec<_>>();
+        if (split.is_empty()) continue;
 
         let command = split[0];
         let args = &split[1..];
