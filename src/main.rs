@@ -27,7 +27,7 @@ fn main() {
             "echo" => println!("{}", args.join(" ")),
             "type" => {
                 if recognized_com.contains(&args[0]) {
-                    println!("{command} is a shell builtin");
+                    println!("{&args[0]} is a shell builtin");
                 } else {
                     not_found(command);
                 }
