@@ -11,11 +11,15 @@ fn main() {
             .read_line(&mut input)
             .expect("Failed to read line");
         
-        let command = input.trim();
-        if (command == "exit") {
-            break;
-        }
+        let split = input.split_whitespace().collect::<Vec<_>>();
 
-        println!("{command}: command not found");
+        let command = split[0];
+        let args = &split[1..];
+
+        match command {
+            "exit" => std::process::exit(0);
+            "echo" => println!(args.join(" "));
+            _ => println!("{command}: command not found");
+        }
     }
 }
