@@ -17,9 +17,9 @@ fn main() {
         let args = &split[1..];
 
         match command {
-            "exit" => std::process::exit(0);
-            "echo" => println!(args.join(" "));
-            _ => println!("{command}: command not found");
+            "exit" => std::process::exit(0),
+            "echo" => println!(args.join(" ")),
+            _ => println!("{command}: command not found"),
         }
     }
 }
