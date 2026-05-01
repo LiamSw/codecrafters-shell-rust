@@ -10,7 +10,7 @@ fn main() {
         .read_line(&mut input)
         .expect("Failed to read line");
 
-    print!("{input}: command not found");
+    print!("{input.trim()}: command not found");
 
     io::stdout().flush().unwrap();
 }
