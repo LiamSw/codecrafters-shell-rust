@@ -26,8 +26,9 @@ fn main() {
             "exit" => std::process::exit(0),
             "echo" => println!("{}", args.join(" ")),
             "type" => {
-                if recognized_com.contains(&args[0]) {
-                    println!("{&args[0]} is a shell builtin");
+                let cmd_type = &args[0];
+                if recognized_com.contains(cmd_type) {
+                    println!("{cmd_type} is a shell builtin");
                 } else {
                     not_found(command);
                 }
