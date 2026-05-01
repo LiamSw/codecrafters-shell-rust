@@ -30,7 +30,7 @@ fn main() {
                 if recognized_com.contains(cmd_type) {
                     println!("{cmd_type} is a shell builtin");
                 } else {
-                    not_found(command);
+                    not_found(cmd_type);
                 }
             }
             _ => not_found(command),
