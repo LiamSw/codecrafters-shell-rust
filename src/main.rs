@@ -16,7 +16,7 @@ fn main() {
             .expect("Failed to read line");
         
         let split = input.split_whitespace().collect::<Vec<_>>();
-        if (split.is_empty()) {continue;}
+        if split.is_empty() {continue;}
 
         let command = split[0];
         let args = &split[1..];
@@ -26,9 +26,9 @@ fn main() {
             "exit" => std::process::exit(0),
             "echo" => println!("{}", args.join(" ")),
             "type" => {
-                if (args.len > 1) {std::process::exit(0);} 
+                if args.len > 1 {std::process::exit(0);} 
 
-                if (recognized_com.contains(&args[0])) {
+                if recognized_com.contains(&args[0]) {
                     println!("{command} is a shell builtin");
                 } else {
                     not_found(command);
