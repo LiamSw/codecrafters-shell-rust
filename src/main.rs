@@ -11,7 +11,7 @@ fn main() {
             .read_line(&mut input)
             .expect("Failed to read line");
         
-        let split = input.split_whitespace().collect::<Vec<_>>();
+        let split = input.split_whitespace().collect::<Vec<str>>();
 
         let command = split[0];
         let args = &split[1..];
