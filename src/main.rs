@@ -1,6 +1,10 @@
 #[allow(unused_imports)]
 use std::io::{self, Write};
 
+fn not_found(cmd: &str) {
+    println!("{cmd}: command not found");
+}
+
 fn main() {
     loop {
         print!("$ ");
@@ -16,11 +20,21 @@ fn main() {
 
         let command = split[0];
         let args = &split[1..];
+        let recognized_com = ["echo", "type", "exit"];
 
         match command {
             "exit" => std::process::exit(0),
             "echo" => println!("{}", args.join(" ")),
-            _ => println!("{command}: command not found"),
+            "type" => {
+                if (args.len > 1) {std::process::exit(0);} 
+
+                if (recognized_com.contains(args[0])) {
+                    println!("{command} is a shell builtin");
+                } else {
+                    not_found(command);
+                }
+            }
+            _ => not_found(command),
         }
     }
 }
