@@ -3,6 +3,21 @@ use std::io::{self, Write};
 use std::env;
 use std::fs;
 use is_executable::is_executable;
+use std::process::Command;
+use std::path::PathBuf;
+
+fn find_path(command: &str) -> Option<PathBuf> {
+    let key = "PATH";
+    let paths = env::var_os(key)?;
+    
+    for path in env::split_paths(&paths) {
+        let test_path = path.join(command);
+        if test_path.exists() && is_executable(&test_path) {
+            return Some(test_path);
+        }
+    }
+    None
+}
 
 fn main() {
     loop {
@@ -28,34 +43,22 @@ fn main() {
                 let cmd_type = &args[0];
                 if recognized_com.contains(cmd_type) {
                     println!("{cmd_type} is a shell builtin");
+                } else if let Some(path) = find_path(cmd_type) {
+                    println!("{cmd_type} is {}", path.display());
                 } else {
-                    let key = "PATH";
-                    match env::var_os(key) {
-                        Some(paths) => {
-                            'search: {
-                                for path in env::split_paths(&paths) {
-                                    let test_path = path.join(cmd_type);
-
-                                    match fs::exists(&test_path) {
-                                        Ok(true) => {
-                                            if is_executable(&test_path) {
-                                                println!("{cmd_type} is {}", test_path.display());
-                                                break 'search;
-                                            }
-                                            else {continue;}
-                                        }
-                                        Ok(false) => continue,
-                                        Err(e) => println!("Error checking path: {}", e),
-                                    }
-                                }
-                            println!("{cmd_type}: not found");
-                            }
-                        }
-                        None => println!("{key} is not defined in the environment.")
-                    }
+                    println!("{cmd_type}: not found");
                 }
             }
-            _ => println!("{command}: command not found"),
+            _ => {
+                if let Some(path) = find_path(command) {
+                    let status = Command::new(path)
+                        .args(args)
+                        .status()
+                        .expect("Failed to execute command");
+                } else {
+                    println!("{command}: command not found");
+                }
+            }
         }
     }
 }
