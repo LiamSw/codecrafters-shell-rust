@@ -38,8 +38,9 @@ fn main() {
                                 match fs::exists(test_path) {
                                     Ok(true) => {
                                         if is_executable(&test_path) {
-                                            println!("{cmd_type} is {}", test_path.display());}
+                                            println!("{cmd_type} is {}", test_path.display());
                                             return;
+                                        }
                                         else {continue;}
                                     }
                                     Ok(false) => continue,
