@@ -35,7 +35,7 @@ fn main() {
                             for path in env::split_paths(&paths) {
                                 let test_path = path.join(cmd_type);
 
-                                match fs::exists(test_path) {
+                                match fs::exists(&test_path) {
                                     Ok(true) => {
                                         if is_executable(&test_path) {
                                             println!("{cmd_type} is {}", test_path.display());
