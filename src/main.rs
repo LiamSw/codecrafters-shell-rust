@@ -52,7 +52,7 @@ fn main() {
             "pwd" => {
                 let curr_dir = env::current_dir()
                     .expect("Failed to get current directory");
-                    println!("{curr_dir}");
+                    println!("{}", curr_dir.display());
             }
             _ => {
                 if let Some(path) = find_path(command) {
