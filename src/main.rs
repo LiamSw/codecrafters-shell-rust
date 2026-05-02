@@ -34,7 +34,7 @@ fn main() {
 
         let command = split[0];
         let args = &split[1..];
-        let recognized_com = ["echo", "type", "exit"];
+        let recognized_com = ["echo", "type", "exit", "pwd"];
 
         match command {
             "exit" => std::process::exit(0),
