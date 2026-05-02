@@ -51,7 +51,7 @@ fn main() {
             }
             _ => {
                 if let Some(path) = find_path(command) {
-                    let status = Command::new(path)
+                    let status = Command::new(command)
                         .args(args)
                         .status()
                         .expect("Failed to execute command");
