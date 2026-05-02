@@ -49,6 +49,11 @@ fn main() {
                     println!("{cmd_type}: not found");
                 }
             }
+            "pwd" => {
+                let curr_dir = env::current_dir()
+                    .expect("Failed to get current directory");
+                    println!("{curr_dir}");
+            }
             _ => {
                 if let Some(path) = find_path(command) {
                     let status = Command::new(command)
