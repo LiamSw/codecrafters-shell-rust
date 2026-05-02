@@ -32,22 +32,24 @@ fn main() {
                     let key = "PATH";
                     match env::var_os(key) {
                         Some(paths) => {
-                            for path in env::split_paths(&paths) {
-                                let test_path = path.join(cmd_type);
+                            'search: {
+                                for path in env::split_paths(&paths) {
+                                    let test_path = path.join(cmd_type);
 
-                                match fs::exists(&test_path) {
-                                    Ok(true) => {
-                                        if is_executable(&test_path) {
-                                            println!("{cmd_type} is {}", test_path.display());
-                                            return;
+                                    match fs::exists(&test_path) {
+                                        Ok(true) => {
+                                            if is_executable(&test_path) {
+                                                println!("{cmd_type} is {}", test_path.display());
+                                                break 'search;
+                                            }
+                                            else {continue;}
                                         }
-                                        else {continue;}
+                                        Ok(false) => continue,
+                                        Err(e) => println!("Error checking path: {}", e),
                                     }
-                                    Ok(false) => continue,
-                                    Err(e) => println!("Error checking path: {}", e),
                                 }
-                            }
                             println!("{cmd_type}: not found");
+                        }
                         }
                         None => println!("{key} is not defined in the environment.")
                     }
