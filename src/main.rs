@@ -49,7 +49,7 @@ fn main() {
                                     }
                                 }
                             println!("{cmd_type}: not found");
-                        }
+                            }
                         }
                         None => println!("{key} is not defined in the environment.")
                     }
