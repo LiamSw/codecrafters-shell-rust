@@ -57,7 +57,10 @@ fn main() {
             "cd" => {
                 if args.is_empty() {continue;}
 
-                if args[0] == "~" {env::home_dir();}
+                if args[0] == "~" {
+                    env::home_dir(); 
+                    continue;
+                }
 
                 let change_dir = env::set_current_dir(args[0]).is_ok();
                 if !change_dir {
