@@ -28,7 +28,7 @@ fn parse(input: &str) -> Vec<String>{
     for c in values {
         match c {
             '\'' if !double_quote => single_quote = !single_quote,
-            '"' => double_quote = !double_quote,
+            '"' if !single_quote => double_quote = !double_quote,
             ' ' if !single_quote && !double_quote => {
                     if !temp_string.is_empty() {
                         vector.push(std::mem::take(&mut temp_string));
