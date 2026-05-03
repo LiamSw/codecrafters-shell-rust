@@ -56,6 +56,9 @@ fn main() {
             }
             "cd" => {
                 if args.is_empty() {continue;}
+
+                if args[0] == "~" {env::home_dir();}
+
                 let change_dir = env::set_current_dir(args[0]).is_ok();
                 if !change_dir {
                     println!("cd: {}: No such file or directory", args[0]);
