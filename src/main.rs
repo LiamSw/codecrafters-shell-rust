@@ -22,12 +22,14 @@ fn parse(input: &str) -> Vec<String>{
     let values = input.trim().chars();
     let mut vector = Vec::new();
     let mut single_quote = false;
+    let mut double_quote = false;
     let mut temp_string = String::new();
 
     for c in values {
         match c {
             '\'' => single_quote = !single_quote,
-            ' ' if !single_quote => {
+            '"' => double_quote = !double_quote,
+            ' ' if !single_quote && !double_quote => {
                     if !temp_string.is_empty() {
                         vector.push(std::mem::take(&mut temp_string));
                     }
