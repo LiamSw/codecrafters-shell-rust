@@ -1,7 +1,6 @@
 #[allow(unused_imports)]
 use std::io::{self, Write};
 use std::env;
-use std::fs;
 use is_executable::is_executable;
 use std::process::Command;
 use std::path::PathBuf;
@@ -40,6 +39,7 @@ fn main() {
             "exit" => std::process::exit(0),
             "echo" => println!("{}", args.join(" ")),
             "type" => {
+                if args.is_empty() {continue;}
                 let cmd_type = &args[0];
                 if recognized_com.contains(cmd_type) {
                     println!("{cmd_type} is a shell builtin");
@@ -54,9 +54,16 @@ fn main() {
                     .expect("Failed to get current directory");
                     println!("{}", curr_dir.display());
             }
+            "cd" => {
+                if args.is_empty() {continue;}
+                let change_dir = env::set_current_dir(args[0]).is_ok();
+                if !change_dir {
+                    println!("cd: {}: No such file or directory", args[0]);
+                }
+            }
             _ => {
-                if let Some(path) = find_path(command) {
-                    let status = Command::new(command)
+                if let Some(_path) = find_path(command) {
+                    let _status = Command::new(command)
                         .args(args)
                         .status()
                         .expect("Failed to execute command");
