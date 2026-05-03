@@ -56,13 +56,13 @@ fn main() {
             }
             "cd" => {
                 if args.is_empty() {continue;}
+                let mut path = args[0].to_string();
 
-                if args[0] == "~" {
-                    env::home_dir(); 
-                    continue;
+                if path == "~" {
+                    if let Ok(home) = env::var("HOME") {path=home;}
                 }
 
-                let change_dir = env::set_current_dir(args[0]).is_ok();
+                let change_dir = env::set_current_dir(&path).is_ok();
                 if !change_dir {
                     println!("cd: {}: No such file or directory", args[0]);
                 }
