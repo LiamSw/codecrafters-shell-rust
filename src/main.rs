@@ -18,6 +18,29 @@ fn find_path(command: &str) -> Option<PathBuf> {
     None
 }
 
+fn parse(input: &str) -> Vec<String>{
+    let values = input.trim().chars();
+    let mut vector = Vec::new();
+    let mut single_quote = false;
+    let mut temp_string = String::new();
+
+    for c in values {
+        match c {
+            '\'' => single_quote = !single_quote,
+            ' ' if !single_quote => {
+                    if !temp_string.is_empty() {
+                        vector.push(std::mem::take(&mut temp_string));
+                    }
+                }
+            _ => temp_string.push(c),
+        }
+    }
+
+    if !temp_string.is_empty() {vector.push(temp_string);}
+
+    vector
+}
+
 fn main() {
     loop {
         print!("$ ");
@@ -28,10 +51,10 @@ fn main() {
             .read_line(&mut input)
             .expect("Failed to read line");
         
-        let split = input.split_whitespace().collect::<Vec<_>>();
+        let split = parse(&input);
         if split.is_empty() {continue;}
 
-        let command = split[0];
+        let command = split[0].as_str();
         let args = &split[1..];
         let recognized_com = ["echo", "type", "exit", "pwd"];
 
@@ -40,7 +63,7 @@ fn main() {
             "echo" => println!("{}", args.join(" ")),
             "type" => {
                 if args.is_empty() {continue;}
-                let cmd_type = &args[0];
+                let cmd_type = &args[0].as_str();
                 if recognized_com.contains(cmd_type) {
                     println!("{cmd_type} is a shell builtin");
                 } else if let Some(path) = find_path(cmd_type) {
