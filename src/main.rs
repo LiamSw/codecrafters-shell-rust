@@ -24,6 +24,7 @@ fn parse(input: &str) -> Vec<String>{
     let mut single_quote = false;
     let mut double_quote = false;
     let mut temp_string = String::new();
+    let db_quote_special = ['"', '\\', '$', '`', 'n'];
 
     while let Some(c) = values.next() {
         match c {
@@ -31,10 +32,16 @@ fn parse(input: &str) -> Vec<String>{
                 if single_quote {
                     temp_string.push(c);
                     continue;
-                }
-                if values.peek().is_some() {
-                    let c_next = values.next().unwrap();
-                    temp_string.push(c_next);
+                } else if let Some(&c_next) = values.peek() {
+                    let special = db_quote_special.contains(&c_next);
+            
+                    if !double_quote || (double_quote && special) {
+                        temp_string.push(values.next().unwrap());
+                    } else {
+                        temp_string.push(c);
+                    }
+                } else {
+                    temp_string.push(c);
                 }
             }
             '\'' if !double_quote => single_quote = !single_quote,
