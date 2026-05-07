@@ -27,7 +27,11 @@ fn parse(input: &str) -> Vec<String>{
 
     while let Some(c) = values.next() {
         match c {
-            '\\' => { 
+            '\\' => {
+                if single_quote {
+                    temp_string.push(c);
+                    continue;
+                }
                 if values.peek().is_some() {
                     let c_next = values.next().unwrap();
                     temp_string.push(c_next);
