@@ -19,14 +19,20 @@ fn find_path(command: &str) -> Option<PathBuf> {
 }
 
 fn parse(input: &str) -> Vec<String>{
-    let values = input.trim().chars();
+    let mut values = input.trim().chars().peekable();
     let mut vector = Vec::new();
     let mut single_quote = false;
     let mut double_quote = false;
     let mut temp_string = String::new();
 
-    for c in values {
+    while let Some(c) = values.next() {
         match c {
+            '\\' => { 
+                if values.peek().is_some() {
+                    let c_next = values.next().unwrap();
+                    temp_string.push(c_next);
+                }
+            }
             '\'' if !double_quote => single_quote = !single_quote,
             '"' if !single_quote => double_quote = !double_quote,
             ' ' if !single_quote && !double_quote => {
