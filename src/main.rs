@@ -1,9 +1,14 @@
+use core::range;
 #[allow(unused_imports)]
 use std::io::{self, Write};
 use std::env;
+use std::os::linux::raw::stat;
+use bytes::buf::Writer;
 use is_executable::is_executable;
 use std::process::Command;
 use std::path::PathBuf;
+use std::fs::OpenOptions;
+use std::fs::File;
 
 fn find_path(command: &str) -> Option<PathBuf> {
     let key = "PATH";
@@ -60,6 +65,18 @@ fn parse(input: &str) -> Vec<String>{
     vector
 }
 
+fn output(args: &mut Vec<String>) -> Option<File> {
+    if let Some(i) = args.iter().position(|x| x == ">" || x == "1>") {
+        if let Some(file) = args.get(i+1) {
+            let file =  File::create(file).expect("failed to create the file"); 
+            args.drain(i..);
+            return Some(file); 
+        }
+    }
+
+    None
+} 
+
 fn main() {
     loop {
         print!("$ ");
@@ -70,32 +87,41 @@ fn main() {
             .read_line(&mut input)
             .expect("Failed to read line");
         
-        let split = parse(&input);
+        let mut split = parse(&input);
         if split.is_empty() {continue;}
 
+        let out = output(&mut split);
         let command = split[0].as_str();
         let args = &split[1..];
         let recognized_com = ["echo", "type", "exit", "pwd"];
 
         match command {
-            "exit" => std::process::exit(0),
-            "echo" => println!("{}", args.join(" ")),
-            "type" => {
-                if args.is_empty() {continue;}
-                let cmd_type = &args[0].as_str();
-                if recognized_com.contains(cmd_type) {
-                    println!("{cmd_type} is a shell builtin");
-                } else if let Some(path) = find_path(cmd_type) {
-                    println!("{cmd_type} is {}", path.display());
-                } else {
-                    println!("{cmd_type}: not found");
+            "echo" | "type" | "pwd" => {
+                let mut writer: Box<dyn Write> = match out {
+                    Some(ref f) => Box::new(f.try_clone().expect("failed clone")), 
+                    None => Box::new(io::stdout()), 
+                };
+
+                if command == "echo" {writeln!(writer, "{}", args.join(" ")).expect("error");}
+                if command == "type" {
+                    if args.is_empty() {continue;}
+                    let cmd_type = &args[0].as_str();
+                    if recognized_com.contains(cmd_type) {
+                        writeln!(writer, "{cmd_type} is a shell builtin").expect("error");
+                    } else if let Some(path) = find_path(cmd_type) {
+                        writeln!(writer, "{cmd_type} is {}", path.display()).expect("error");
+                    } else {
+                        writeln!(writer, "{cmd_type}: not found").expect("error");
+                    }
                 }
+                if command == "pwd" {
+                    let curr_dir = env::current_dir()
+                        .expect("Failed to get current directory");
+                        writeln!(writer, "{}", curr_dir.display()).expect("error");
+                }
+
             }
-            "pwd" => {
-                let curr_dir = env::current_dir()
-                    .expect("Failed to get current directory");
-                    println!("{}", curr_dir.display());
-            }
+            "exit" => std::process::exit(0),
             "cd" => {
                 if args.is_empty() {continue;}
                 let mut path = args[0].to_string();
@@ -111,10 +137,14 @@ fn main() {
             }
             _ => {
                 if let Some(_path) = find_path(command) {
-                    let _status = Command::new(command)
-                        .args(args)
-                        .status()
-                        .expect("Failed to execute command");
+                    let mut pth = Command::new(command);
+                        pth.args(args);
+
+                        if let Some(f) = out {
+                            pth.stdout(f);
+                        }
+
+                        let _status = pth.status().expect("Failed to execute command");
                 } else {
                     println!("{command}: command not found");
                 }
