@@ -66,7 +66,7 @@ fn parse(input: &str) -> Vec<String>{
 }
 
 fn output(args: &mut Vec<String>) -> Option<File> {
-    if let Some(i) = args.iter().position(|x| x == ">" || x == "1>") {
+    if let Some(i) = args.iter().position(|x| x == ">" || x == "1>" || x == "2>") {
         if let Some(file) = args.get(i+1) {
             let file =  File::create(file).expect("No such file or directory"); 
             args.drain(i..);
